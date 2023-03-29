@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   turtlesim
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -60,6 +61,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_service_files(
   FILES
   SetTarget.srv
+  SetRadiusSpeed.srv
   # Service2.srv
 )
 
@@ -159,10 +161,20 @@ add_library(PointTracker
   src/PointTracker.cpp
 )
 
+add_library(CircleTracker
+  src/CircleTracker.cpp
+)
+
 add_executable(turtle_point_tracker src/PointTrackerNode.cpp)
 target_link_libraries(turtle_point_tracker
   ${catkin_LIBRARIES}
   PointTracker
+)
+
+add_executable(turtle_circle_tracker src/CircleTrackerNode.cpp)
+target_link_libraries(turtle_circle_tracker
+  ${catkin_LIBRARIES}
+  CircleTracker
 )
 
 #############

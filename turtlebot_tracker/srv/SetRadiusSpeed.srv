@@ -1,0 +1,4 @@
+std_msgs/Float32 radius
+std_msgs/Float32 speed
+---
+std_msgs/Bool status

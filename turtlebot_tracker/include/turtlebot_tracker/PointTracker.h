@@ -1,5 +1,5 @@
-#ifndef PID_TRACKER_TURTLE_H
-#define PID_TRACKER_TURTLE_H
+#ifndef POINT_TRACKER_TURTLE_H
+#define POINT_TRACKER_TURTLE_H
 
 #include <ros/ros.h>
 #include <turtlesim/Pose.h>
@@ -20,7 +20,7 @@ class PointTracker{
         float Kp_dist_, Kd_dist_, Ki_dist_;
         float error_theta_last, error_dist_last;
         float integral_error_theta = 0, integral_error_dist = 0;
-        double linear_velocity_cap, angular_velocity_cap; 
+        double linear_velocity_cap, angular_velocity_cap;
         std::chrono::_V2::system_clock::time_point last_loop_time_;  // std::chrono::high_resolution_clock::now();
 
         std::string bot_name_;
