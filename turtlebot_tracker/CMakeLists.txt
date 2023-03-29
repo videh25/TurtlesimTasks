@@ -165,6 +165,10 @@ add_library(CircleTracker
   src/CircleTracker.cpp
 )
 
+add_library(ChaseTracker
+  src/ChaseTracker.cpp
+)
+
 add_executable(turtle_point_tracker src/PointTrackerNode.cpp)
 target_link_libraries(turtle_point_tracker
   ${catkin_LIBRARIES}
@@ -175,6 +179,18 @@ add_executable(turtle_circle_tracker src/CircleTrackerNode.cpp)
 target_link_libraries(turtle_circle_tracker
   ${catkin_LIBRARIES}
   CircleTracker
+)
+
+add_executable(turtle_chase_tracker src/ChaseTrackerNode.cpp)
+target_link_libraries(turtle_chase_tracker
+  ${catkin_LIBRARIES}
+  ChaseTracker
+  PointTracker
+)
+
+add_executable(chase_monitor src/chase_monitor.cpp)
+target_link_libraries(chase_monitor
+  ${catkin_LIBRARIES}
 )
 
 #############

@@ -6,8 +6,6 @@
 #include <string.h>
 #include "geometry_msgs/Twist.h"
 #include "turtlebot_tracker/SetRadiusSpeed.h"
-#include <tf/transform_broadcaster.h>
-#include <tf/tf.h>
 
 namespace NRT_Task{
 

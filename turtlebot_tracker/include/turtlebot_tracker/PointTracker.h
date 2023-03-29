@@ -10,7 +10,7 @@
 namespace NRT_Task{
 
 class PointTracker{
-    private:
+    protected:
         ros::NodeHandle* nh_;
         ros::Subscriber pose_subscriber_;
         ros::Publisher velocity_publisher_;
@@ -21,6 +21,7 @@ class PointTracker{
         float error_theta_last, error_dist_last;
         float integral_error_theta = 0, integral_error_dist = 0;
         double linear_velocity_cap, angular_velocity_cap;
+        float target_radius_;
         std::chrono::_V2::system_clock::time_point last_loop_time_;  // std::chrono::high_resolution_clock::now();
 
         std::string bot_name_;
