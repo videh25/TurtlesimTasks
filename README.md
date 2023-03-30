@@ -1,6 +1,12 @@
 # TurtlesimTasks
 Contains implementations of Position Control, Chasing and Bot Avoidance using turtlesim.
 
+## Setup
+Setup requires the turtlesim package installed.
+```
+sudo apt install ros-noetic-turtlesim
+```
+
 ## Goal1: Control Turtle
 https://user-images.githubusercontent.com/66770479/228974538-845d5346-75a1-4c01-85bd-d263940cdc08.mp4
 
