@@ -16,29 +16,31 @@ class RandomEscaper{
         ros::Subscriber self_pose_subscriber_;
         ros::Subscriber pt_pose_subscriber_;
         ros::Publisher velocity_publisher_;
+        ros::Publisher rt_pose_publisher_;
         ros::Timer velocity_publisher_timer_;
         ros::Timer velocity_randomize_timer_;
+        ros::Timer rt_pose_publisher_timer_;
 
         float linear_velocity_cap;
         float angular_velocity_cap;
         float warning_radius;
         float escape_distance_;
+        float wall_sampling;
         std::string bot_name_;
         std::string police_name_;
         geometry_msgs::Twist velocity_msg_;
-        turtlesim::Pose pt_pose;
         turtlesim::Pose self_pose;
-        std::vector<Eigen::Vector2cf> escape_routes;
         
 
         void pt_pose_callback(const turtlesim::Pose& msg);
         void self_pose_callback(const turtlesim::Pose& msg);
         void publish_callback(const ros::TimerEvent& event);
         void randomize_velocity(const ros::TimerEvent& event);
-        void escape();
-        bool is_a_free_point(double point_x, double point_y);
-        bool self_pose_received_once;
-        bool pt_pose_received_once;
+        void escaping_velocity(int obstacle_index);
+        int check_for_obstacles();
+        void rt_pose_publish_callback(const ros::TimerEvent& event);
+        bool obstacle_in_sight;
+        std::vector<Eigen::Vector2f> obstacles;
 
     public:
         RandomEscaper(ros::NodeHandle* nh, std::string bot_name, std::string police_name);
