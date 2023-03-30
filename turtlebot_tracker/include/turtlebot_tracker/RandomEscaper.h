@@ -5,7 +5,7 @@
 #include <turtlesim/Pose.h>
 #include <string.h>
 #include <cstdlib>
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 #include "geometry_msgs/Twist.h"
 
 namespace NRT_Task{
@@ -37,6 +37,8 @@ class RandomEscaper{
         void randomize_velocity(const ros::TimerEvent& event);
         void escape();
         bool is_a_free_point(double point_x, double point_y);
+        bool self_pose_received_once;
+        bool pt_pose_received_once;
 
     public:
         RandomEscaper(ros::NodeHandle* nh, std::string bot_name, std::string police_name);
