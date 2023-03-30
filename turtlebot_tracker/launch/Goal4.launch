@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="robber_name" default="RT"/>
+    <arg name="police_name" default="PT"/>
+    <arg name="position_x" default="5.0"/>
+    <arg name="position_y" default="5.0"/>
+    <arg name="position_xP" default="11.0"/>
+    <arg name="position_yP" default="10.0"/>
+
+    <node pkg="turtlesim" type="turtlesim_node" name="turtlesim" required="true"/>
+
+    <node pkg="rosservice" type="rosservice" name="turtle1_killer" args="call /kill turtle1" />
+    <node pkg="rosservice" type="rosservice" name="RT_spawner" args="call /spawn '{x: $(arg position_x), y: $(arg position_y), theta: 0., name: '$(arg robber_name)'}'" />
+    <!-- <node pkg="turtlebot_tracker" type="turtle_random_escaper" name="RandomEscapingNode" args="$(arg robber_name) $(arg police_name)"/> -->
+    <!-- <node pkg="rosservice" type="rosservice" name="RadiusChanger" args="call /RT/set_radius_and_speed '{radius: {data: 5.5}, speed: {data: 20.0}}'" /> -->
+    
+    <node pkg="rosservice" type="rosservice" name="PT_spawner" args="call /spawn '{x: $(arg position_xP), y: $(arg position_yP), theta: 0., name: '$(arg police_name)'}'" />
+    
+    <!-- rosrun turtlebot_tracker chase_monitor RT PT -->
+    
+    <!-- <node pkg="turtlebot_tracker" type="turtle_chase_tracker" name="Chaser" args="$(arg police_name) 4 0.8 0 1.2 0 0.4 20 20"/> -->
+
+    <!-- After 10 sec -->
+    <!-- rosservice call /RT/set_radius_and_speed '{radius: {data: 5.5}, speed: {data: 0.5}}' -->
+    <!-- rosrun turtlebot_tracker turtle_chase_tracker PT 4 0.8 0 1.2 0 0.4 20 20 -->
+
+</launch>

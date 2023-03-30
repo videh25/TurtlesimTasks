@@ -22,8 +22,6 @@ integral_error_theta(0),
 bot_name_(bot_name),
 last_loop_time_(std::chrono::high_resolution_clock::now())
 {
-    ROS_INFO_STREAM("Initialising Tracker with ditance gains Kp: " << Kp_dist_ << ", Kd: " << Kd_dist_ << ", Ki: " << Ki_dist_);
-    ROS_INFO_STREAM("Initialising Tracker with theta gains Kp: " << Kp_theta_ << ", Kd: " << Kd_theta_ << ", Ki: " << Ki_theta_);
     pose_subscriber_ = nh_->subscribe(bot_name + std::string("/pose"), 1, &PointTracker::pose_callback, this);
     velocity_publisher_ = nh_->advertise<geometry_msgs::Twist>(bot_name + std::string("/cmd_vel"), 1);
     set_target_point_server_ = nh_->advertiseService(bot_name + std::string("/set_target"), &PointTracker::set_target_callback, this);

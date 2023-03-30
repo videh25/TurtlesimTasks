@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- rosrun turtlebot_tracker chase_monitor RT PT -->
+    <arg name="robber_name" default="RT"/>
+    <arg name="police_name" default="PT"/>
+    <arg name="position_x" default="5.0"/>
+    <arg name="position_y" default="5.0"/>
+    <arg name="RT_radius" default="5.5"/>
+    <arg name="RT_final_speed" default="0.5"/>
+
+    <node pkg="rosservice" type="rosservice" name="PT_spawner" args="call /spawn '{x: $(arg position_x), y: $(arg position_y), theta: 0., name: '$(arg police_name)'}'" />
+    <node pkg="rosservice" type="rosservice" name="SpeedChanger" args="call /RT/set_radius_and_speed '{radius: {data: $(arg RT_radius)}, speed: {data: $(arg RT_final_speed)}}'" />
+    <node pkg="turtlebot_tracker" type="turtle_chase_tracker" name="Chaser" args="$(arg police_name)"/>
+
+</launch>

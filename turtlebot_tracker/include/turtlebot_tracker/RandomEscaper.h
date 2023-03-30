@@ -43,7 +43,7 @@ class RandomEscaper{
         std::vector<Eigen::Vector2f> obstacles;
 
     public:
-        RandomEscaper(ros::NodeHandle* nh, std::string bot_name, std::string police_name);
+        RandomEscaper(ros::NodeHandle* nh, std::string bot_name, std::string police_name, float max_linear_velocity, float max_angular_velocity, float warning_radius, float escape_distance);
 
 };
 

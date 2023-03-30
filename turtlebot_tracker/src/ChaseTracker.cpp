@@ -4,13 +4,13 @@ namespace NRT_Task{
 
 ChaseTracker::ChaseTracker(ros::NodeHandle* nh, float Kp_theta, float Kd_theta, float Ki_theta,float Kp_dist, float Kd_dist, float Ki_dist, float velocity_limit, float acceleration_limit, std::string bot_name)
 : PointTracker(nh, Kp_theta, Kd_theta, Ki_theta, Kp_dist, Kd_dist, Ki_dist, bot_name), 
-acceleration_limit_(acceleration_limit)
+acceleration_limit_(acceleration_limit),
+linear_velocity_cap(velocity_limit),
+angular_velocity_cap(velocity_limit/0.3)
 {
     rt_pose_subscriber = nh_->subscribe("/rt_real_pose", 1, &ChaseTracker::rt_pose_callback, this);
     pose_subscriber_ = nh_->subscribe(bot_name + std::string("/pose"), 1, &ChaseTracker::pose_callback, this);
     target_radius_ = 1.0;
-    linear_velocity_cap = velocity_limit;
-    angular_velocity_cap = velocity_limit/0.3;
 }
 
 void ChaseTracker::rt_pose_callback(const turtlesim::Pose& msg){
@@ -58,13 +58,15 @@ void ChaseTracker::pose_callback(const turtlesim::Pose& msg){
 
 
     float real_acceleration = (velocity_msg_.linear.x - msg.linear_velocity)/duration; 
-    ROS_INFO_STREAM("Distance: " << error_dist);
+    // ROS_INFO_STREAM("Distance: " << error_dist);
     if (abs(real_acceleration) >= acceleration_limit_){
         velocity_msg_.linear.x = msg.linear_velocity + (-1 + 2*(real_acceleration > 0))*(acceleration_limit_);
     }
 
     velocity_msg_.angular.z = std::min(velocity_msg_.angular.z, angular_velocity_cap);
     velocity_msg_.linear.x = std::min(velocity_msg_.linear.x, linear_velocity_cap);
+    ROS_INFO_STREAM("Latest Linear Speed: " << velocity_msg_.linear.x);
+    ROS_INFO_STREAM("Linear Speed Limit: " << linear_velocity_cap);
 
     error_theta_last = error_theta;
     error_dist_last = error_dist;

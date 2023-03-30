@@ -8,14 +8,14 @@
 
 namespace NRT_Task{
 
-RandomEscaper::RandomEscaper(ros::NodeHandle* nh, std::string bot_name, std::string police_name)
+RandomEscaper::RandomEscaper(ros::NodeHandle* nh, std::string bot_name, std::string police_name, float max_linear_velocity, float max_angular_velocity, float warning_radius, float escape_distance)
 : nh_(nh),
 bot_name_(bot_name),
 police_name_(police_name),
-linear_velocity_cap(2.0),
-angular_velocity_cap(4.0),
-warning_radius(3.0),
-escape_distance_(2.0)
+linear_velocity_cap(max_linear_velocity),
+angular_velocity_cap(max_angular_velocity),
+warning_radius(warning_radius),
+escape_distance_(escape_distance)
 {
     velocity_publisher_ = nh_->advertise<geometry_msgs::Twist>(bot_name + std::string("/cmd_vel"), 1);
     rt_pose_publisher_= nh_->advertise<turtlesim::Pose>("/rt_real_pose", 1);
@@ -83,12 +83,13 @@ void RandomEscaper::randomize_velocity(const ros::TimerEvent& event){
 
 
 void RandomEscaper::escaping_velocity(int obstacle_index){
-    ROS_INFO_STREAM("Current Obstacle Distance: " << (Eigen::Vector2f(self_pose.x, self_pose.y) - obstacles[obstacle_index]).norm());
-    ROS_INFO_STREAM("Current Obstacle: " << obstacle_index);
+    // ROS_INFO_STREAM("Current Obstacle Distance: " << (Eigen::Vector2f(self_pose.x, self_pose.y) - obstacles[obstacle_index]).norm());
+    // ROS_INFO_STREAM("Current Obstacle: " << obstacle_index);
     
     if(obstacle_index == 4*wall_sampling){
         float dir_angle = abs(std::atan2(obstacles[obstacle_index][1] - self_pose.y, obstacles[obstacle_index][0] - self_pose.x) - self_pose.theta);
         if(dir_angle >= 160./180.*M_PI){
+            ROS_INFO("Avoiding the police bot!");
             velocity_msg_.linear.x = linear_velocity_cap;
             velocity_msg_.angular.z = 0;
         }else{
@@ -96,6 +97,7 @@ void RandomEscaper::escaping_velocity(int obstacle_index){
             velocity_msg_.angular.z = angular_velocity_cap;
         }
     }else if(obstacle_index % 4 == 0){
+        ROS_INFO("Avoiding the wall!");
         if(abs(self_pose.theta - M_PI/2.) <= 20./180.*M_PI){
             velocity_msg_.linear.x = linear_velocity_cap;
             velocity_msg_.angular.z = 0;
@@ -104,7 +106,8 @@ void RandomEscaper::escaping_velocity(int obstacle_index){
             velocity_msg_.angular.z = angular_velocity_cap;
         }
     }else if(obstacle_index % 4 == 1){
-        if((abs(self_pose.theta - M_PI) <= 20./180.*M_PI) && (abs(self_pose.theta + M_PI) <= 20./180.*M_PI)){
+        ROS_INFO("Avoiding the wall!");
+        if((abs(self_pose.theta - M_PI) <= 20./180.*M_PI) || (abs(self_pose.theta + M_PI) <= 20./180.*M_PI)){
             velocity_msg_.linear.x = linear_velocity_cap;
             velocity_msg_.angular.z = 0;
         }else{
@@ -112,6 +115,7 @@ void RandomEscaper::escaping_velocity(int obstacle_index){
             velocity_msg_.angular.z = angular_velocity_cap;
         }
     }else if(obstacle_index % 4 == 2){
+        ROS_INFO("Avoiding the wall!");
         if(abs(self_pose.theta + M_PI/2) <= 20./180.*M_PI){
             velocity_msg_.linear.x = linear_velocity_cap;
             velocity_msg_.angular.z = 0;
@@ -120,6 +124,7 @@ void RandomEscaper::escaping_velocity(int obstacle_index){
             velocity_msg_.angular.z = angular_velocity_cap;
         }
     }else if(obstacle_index % 4 == 3){
+        ROS_INFO("Avoiding the wall!");
         if(abs(self_pose.theta) <= 20./180.*M_PI){
             velocity_msg_.linear.x = linear_velocity_cap;
             velocity_msg_.angular.z = 0;

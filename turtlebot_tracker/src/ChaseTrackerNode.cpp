@@ -16,33 +16,26 @@ int main (int argc, char **argv)
     } else {
         bot_name = std::string("");
     }
-
-    if (argc >= 9){
-        Kpt = std::stof(argv[2]);
-        Kdt = std::stof(argv[3]);
-        Kit = std::stof(argv[4]);
-
-        Kpd = std::stof(argv[5]);
-        Kdd = std::stof(argv[6]);
-        Kid = std::stof(argv[7]);
-        acceleration_lim = std::stof(argv[8]);
-        velo_lim = std::stof(argv[9]);
-
-    } else {
-        Kpt = 1.;
-        Kdt = 0.;
-        Kit = 0.;
-
-        Kpd = 1.;
-        Kdd = 0.;
-        Kid = 0.;
-    }
-    
     ros::init(argc, argv, bot_name + std::string("_chase_tracking_node"));
     ros::NodeHandle nh;
-    NRT_Task::ChaseTracker tracker_node(&nh, Kpt, Kdt, Kit, Kpd, Kdd, Kid, acceleration_lim, velo_lim, bot_name);
+    nh.getParam(bot_name+"/PID_Distance/Kp", Kpd);
+    nh.getParam(bot_name+"/PID_Distance/Ki", Kid);
+    nh.getParam(bot_name+"/PID_Distance/Kd", Kdd);
+
+    nh.getParam(bot_name+"/PID_Theta/Kp", Kpt);
+    nh.getParam(bot_name+"/PID_Theta/Ki", Kit);
+    nh.getParam(bot_name+"/PID_Theta/Kd", Kdt);
+
+    nh.getParam(bot_name+"/velocity_limit", velo_lim);
+    nh.getParam(bot_name+"/acceleration_limit", acceleration_lim);
+    
+
+    ROS_INFO_STREAM("Initialised Parameters: Kpd: " << Kpd << "| Kid: " << Kid <<"| Kdd: " << Kdd);
+    ROS_INFO_STREAM("Initialised Parameters: Kpt: " << Kpt << "| Kit: " << Kit <<"| Kdt: " << Kdt);
+    ROS_INFO_STREAM("Initialised Parameters: acceleration_lim: " << acceleration_lim << "| velo_lim: " << velo_lim);
+    NRT_Task::ChaseTracker tracker_node(&nh, Kpt, Kdt, Kit, Kpd, Kdd, Kid, velo_lim, acceleration_lim, bot_name);
     ros::spin(); 
 }
 
 
-// rosrun turtlebot_tracker turtle_chase_tracker PT 4 0.8 0 1.2 0 0.4 5
+// rosrun turtlebot_tracker turtle_chase_tracker PT 4 0.8 0 1.2 0 0.4 20 20

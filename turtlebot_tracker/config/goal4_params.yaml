@@ -1,0 +1,17 @@
+PT:
+  PID_Theta:
+    Kp: 4
+    Ki: 0
+    Kd: 0.8
+  PID_Distance:
+      Kp: 1.2
+      Ki: 0.4
+      Kd: 0
+  velocity_limit: 2.0
+  acceleration_limit: 20
+
+RT:
+  linear_velocity_cap: 4.0
+  angular_velocity_cap: 4.0
+  warning_radius: 4.0
+  escape_distance: 2.0

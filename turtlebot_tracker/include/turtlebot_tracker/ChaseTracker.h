@@ -9,6 +9,7 @@ class ChaseTracker: public PointTracker{
     private:
         ros::Subscriber rt_pose_subscriber;
         float acceleration_limit_;
+        double linear_velocity_cap, angular_velocity_cap;
 
         void rt_pose_callback(const turtlesim::Pose& msg);
         void pose_callback(const turtlesim::Pose& msg);

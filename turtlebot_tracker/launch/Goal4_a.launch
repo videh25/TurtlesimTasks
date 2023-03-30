@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="robber_name" default="RT"/>
+    <arg name="police_name" default="PT"/>
+    <arg name="position_x" default="5.0"/>
+    <arg name="position_y" default="5.0"/>
+    <arg name="position_xP" default="1.0"/>
+    <arg name="position_yP" default="1.0"/>
+    <arg name="RT_radius" default="5.5"/>
+    <arg name="RT_initial_speed" default="7.0"/>
+
+
+    <node pkg="turtlesim" type="turtlesim_node" name="turtlesim" required="true"/>
+
+    <rosparam file="$(find turtlebot_tracker)/config/goal4_params.yaml" command="load"/>
+    <node pkg="rosservice" type="rosservice" name="turtle1_killer" args="call /kill turtle1" />
+    <node pkg="rosservice" type="rosservice" name="RT_spawner" args="call /spawn '{x: $(arg position_x), y: $(arg position_y), theta: 0., name: '$(arg robber_name)'}'" />
+    <node pkg="turtlebot_tracker" type="turtle_random_escaper" name="RandomEscapingNode" args="$(arg robber_name) $(arg police_name)"/>
+    <!-- <node pkg="turtlebot_tracker" type="turtle_chase_tracker" name="Chaser" args="$(arg police_name) 4 0.8 0 1.2 0 0.4 20 20"/> -->
+
+    <!-- After 10 sec -->
+    <!-- rosservice call /RT/set_radius_and_speed '{radius: {data: 5.5}, speed: {data: 0.5}}' -->
+    <!-- rosrun turtlebot_tracker chase_monitor RT PT -->
+    <!-- rosrun turtlebot_tracker turtle_chase_tracker PT 4 0.8 0 1.2 0 0.4 20 20 -->
+
+</launch>

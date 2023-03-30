@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- rosrun turtlebot_tracker chase_monitor RT PT -->
+    <arg name="robber_name" default="RT"/>
+    <arg name="police_name" default="PT"/>
+    <arg name="position_xP" default="1.0"/>
+    <arg name="position_yP" default="1.0"/>
+
+    <node pkg="rosservice" type="rosservice" name="PT_spawner" args="call /spawn '{x: $(arg position_xP), y: $(arg position_yP), theta: 0., name: '$(arg police_name)'}'" />
+    <node pkg="turtlebot_tracker" type="turtle_chase_tracker" name="Chaser" args="$(arg police_name)"/>
+
+</launch>
