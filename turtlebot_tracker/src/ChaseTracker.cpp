@@ -10,6 +10,7 @@ acceleration_limit_(acceleration_limit)
     pose_subscriber_ = nh_->subscribe(bot_name + std::string("/pose"), 1, &ChaseTracker::pose_callback, this);
     target_radius_ = 1.0;
     linear_velocity_cap = velocity_limit;
+    angular_velocity_cap = velocity_limit/0.3;
 }
 
 void ChaseTracker::rt_pose_callback(const turtlesim::Pose& msg){

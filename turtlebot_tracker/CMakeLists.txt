@@ -169,6 +169,10 @@ add_library(ChaseTracker
   src/ChaseTracker.cpp
 )
 
+add_library(RandomEscaper
+  src/RandomEscaper.cpp
+)
+
 add_executable(turtle_point_tracker src/PointTrackerNode.cpp)
 target_link_libraries(turtle_point_tracker
   ${catkin_LIBRARIES}
@@ -191,6 +195,12 @@ target_link_libraries(turtle_chase_tracker
 add_executable(chase_monitor src/chase_monitor.cpp)
 target_link_libraries(chase_monitor
   ${catkin_LIBRARIES}
+)
+
+add_executable(turtle_random_escaper src/RandomEscaperNode.cpp)
+target_link_libraries(turtle_random_escaper
+  ${catkin_LIBRARIES}
+  RandomEscaper
 )
 
 #############
