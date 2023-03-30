@@ -39,14 +39,14 @@ void ChaseTracker::pose_callback(const turtlesim::Pose& msg){
     //     integral_error_theta = 0;
     // }
     
-    // if (error_dist < target_radius_){
-        // integral_error_dist = 0;
-        // integral_error_theta = 0;
-        // velocity_msg_.angular.z = 0.;
-        // velocity_msg_.linear.x = 0.;
-        // velocity_publisher_.publish(velocity_msg_);
-        // return;
-    // }
+    if (error_dist < target_radius_){
+        integral_error_dist = 0;
+        integral_error_theta = 0;
+        velocity_msg_.angular.z = 0.;
+        velocity_msg_.linear.x = 0.;
+        velocity_publisher_.publish(velocity_msg_);
+        return;
+    }
 
     float error_theta_d = (error_theta - error_theta_last)/duration;
     integral_error_dist += (error_dist + error_dist_last)/2*duration;
