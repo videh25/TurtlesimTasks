@@ -6,7 +6,7 @@
 
 namespace NRT_Task{
 
-PointTracker::PointTracker(ros::NodeHandle* nh, float Kp_theta, float Kd_theta, float Ki_theta,float Kp_dist, float Kd_dist, float Ki_dist, std::string bot_name)
+PointTracker::PointTracker(ros::NodeHandle* nh, float Kp_theta, float Kd_theta, float Ki_theta,float Kp_dist, float Kd_dist, float Ki_dist, float velocity_limit, std::string bot_name)
 : nh_(nh),
 Kp_theta_(Kp_theta),
 Kd_theta_(Kd_theta),
@@ -20,13 +20,13 @@ error_dist_last(0),
 integral_error_dist(0),
 integral_error_theta(0),
 bot_name_(bot_name),
-last_loop_time_(std::chrono::high_resolution_clock::now())
+last_loop_time_(std::chrono::high_resolution_clock::now()),
+linear_velocity_cap(velocity_limit),
+angular_velocity_cap(velocity_limit*2)
 {
     pose_subscriber_ = nh_->subscribe(bot_name + std::string("/pose"), 1, &PointTracker::pose_callback, this);
     velocity_publisher_ = nh_->advertise<geometry_msgs::Twist>(bot_name + std::string("/cmd_vel"), 1);
     set_target_point_server_ = nh_->advertiseService(bot_name + std::string("/set_target"), &PointTracker::set_target_callback, this);
-    linear_velocity_cap = 2;
-    angular_velocity_cap = 4;
 }
 
 void PointTracker::pose_callback(const turtlesim::Pose& msg){
@@ -46,10 +46,10 @@ void PointTracker::pose_callback(const turtlesim::Pose& msg){
     
     float error_dist_d = (error_dist - error_dist_last)/duration;
     
-    if (error_dist < 0.5){
-        integral_error_dist = 0;
-        integral_error_theta = 0;
-    }
+    // if (error_dist < 0.5){
+    //     integral_error_dist = 0;
+    //     integral_error_theta = 0;
+    // }
     
     if (error_dist < target_radius_){
         integral_error_dist = 0;
@@ -65,7 +65,7 @@ void PointTracker::pose_callback(const turtlesim::Pose& msg){
     integral_error_theta += (error_theta + error_theta_last)/2*duration;
 
     velocity_msg_.angular.z = Kp_theta_*error_theta + Kd_theta_*error_theta_d + Ki_theta_*integral_error_theta;
-    velocity_msg_.linear.x = 0.1*(Kp_dist_*error_dist + Kd_dist_*error_dist_d + Ki_dist_*integral_error_dist);
+    velocity_msg_.linear.x = (Kp_dist_*error_dist + Kd_dist_*error_dist_d + Ki_dist_*integral_error_dist);
 
     velocity_msg_.angular.z = std::min(velocity_msg_.angular.z, angular_velocity_cap);
     velocity_msg_.linear.x = std::min(velocity_msg_.linear.x, linear_velocity_cap);

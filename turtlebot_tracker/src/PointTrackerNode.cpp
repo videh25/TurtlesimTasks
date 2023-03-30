@@ -7,37 +7,23 @@ int main (int argc, char **argv)
     std::string bot_name;
     float Kpt, Kdt, Kit;
     float Kpd, Kdd, Kid;
+    float velo_lim;
+    bot_name = std::string(argv[1]);
 
 
-    // Arguments received as {bot_name Kp Kd}
-    if (argc >= 2){
-        bot_name = std::string(argv[1]);
-    } else {
-        bot_name = std::string("");
-    }
-
-    if (argc >= 8){
-        Kpt = std::stof(argv[2]);
-        Kdt = std::stof(argv[3]);
-        Kit = std::stof(argv[4]);
-
-        Kpd = std::stof(argv[5]);
-        Kdd = std::stof(argv[6]);
-        Kid = std::stof(argv[7]);
-
-    } else {
-        Kpt = 1.;
-        Kdt = 0.;
-        Kit = 0.;
-
-        Kpd = 1.;
-        Kdd = 0.;
-        Kid = 0.;
-    }
-    
     ros::init(argc, argv, bot_name + std::string("_point_tracking_node"));
     ros::NodeHandle nh;
-    NRT_Task::PointTracker tracker_node(&nh, Kpt, Kdt, Kit, Kpd, Kdd, Kid, bot_name);
+    nh.getParam(bot_name+"/PID_Distance/Kp", Kpd);
+    nh.getParam(bot_name+"/PID_Distance/Ki", Kid);
+    nh.getParam(bot_name+"/PID_Distance/Kd", Kdd);
+
+    nh.getParam(bot_name+"/PID_Theta/Kp", Kpt);
+    nh.getParam(bot_name+"/PID_Theta/Ki", Kit);
+    nh.getParam(bot_name+"/PID_Theta/Kd", Kdt);
+
+    nh.getParam(bot_name+"/velocity_limit", velo_lim);
+    
+    NRT_Task::PointTracker tracker_node(&nh, Kpt, Kdt, Kit, Kpd, Kdd, Kid, velo_lim,bot_name);
     ros::spin(); 
 }
 

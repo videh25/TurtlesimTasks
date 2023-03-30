@@ -35,15 +35,6 @@ escape_distance_(escape_distance)
         obstacles.push_back(Eigen::Vector2f(0., float(i)/wall_sampling*11.));
     }
 
-    // obstacles.push_back(Eigen::Vector2f(0., 0.));
-    // obstacles.push_back(Eigen::Vector2f(5.5, 0.));
-    // obstacles.push_back(Eigen::Vector2f(11., 0.));
-    // obstacles.push_back(Eigen::Vector2f(11., 5.5));
-    // obstacles.push_back(Eigen::Vector2f(11., 11.));
-    // obstacles.push_back(Eigen::Vector2f(5.5, 11.));
-    // obstacles.push_back(Eigen::Vector2f(0., 11.0));
-    // obstacles.push_back(Eigen::Vector2f(0., 5.5));
-
     obstacles.push_back(Eigen::Vector2f());
 
 
@@ -64,9 +55,6 @@ void RandomEscaper::publish_callback(const ros::TimerEvent& event){
     if (obstacle_in_sight){
         escaping_velocity(obstacle_index);
     }
-    // float dist = pow(pow(self_pose.y - pt_pose.y, 2) + pow(self_pose.x - pt_pose.x, 2), 0.5);
-    // ROS_INFO_STREAM("Angle: " << dir_angle);
-    // ROS_INFO_STREAM("Self Pose: (" << self_pose.x << ", " << self_pose.y << ") | Police Pose: (" << pt_pose.x << ", " << pt_pose.y << ")");
     
     velocity_publisher_.publish(velocity_msg_);
 }
@@ -88,7 +76,7 @@ void RandomEscaper::escaping_velocity(int obstacle_index){
     
     if(obstacle_index == 4*wall_sampling){
         float dir_angle = abs(std::atan2(obstacles[obstacle_index][1] - self_pose.y, obstacles[obstacle_index][0] - self_pose.x) - self_pose.theta);
-        if(dir_angle >= 160./180.*M_PI){
+        if(dir_angle >= 100./180.*M_PI){
             ROS_INFO("Avoiding the police bot!");
             velocity_msg_.linear.x = linear_velocity_cap;
             velocity_msg_.angular.z = 0;
@@ -140,14 +128,20 @@ void RandomEscaper::escaping_velocity(int obstacle_index){
 int RandomEscaper::check_for_obstacles(){
     int closest_obstacle = -1;
     float closest_distance = 10E9F;
-    for (int i = 4*wall_sampling; i > -1; i--){
+    
+    if ((Eigen::Vector2f(self_pose.x, self_pose.y) - obstacles[4*wall_sampling]).norm() < warning_radius){
+        obstacle_in_sight = true;
+        return 4*wall_sampling;
+    }
+    
+    for (int i = 4*wall_sampling - 1; i > -1; i--){
         float this_distance = (Eigen::Vector2f(self_pose.x, self_pose.y) - obstacles[i]).norm();
         if (this_distance < closest_distance){
             closest_distance = this_distance;
             closest_obstacle = i;
         }
     }
-    if (closest_distance < warning_radius){
+    if (closest_distance < 1.){
         obstacle_in_sight = true;
     }else{
         obstacle_in_sight = false;

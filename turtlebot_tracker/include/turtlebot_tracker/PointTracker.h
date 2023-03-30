@@ -33,7 +33,7 @@ class PointTracker{
                                   turtlebot_tracker::SetTarget::Response &res);
 
     public:
-        PointTracker(ros::NodeHandle* nh, float Kp_theta, float Kd_theta, float Ki_theta,float Kp_dist, float Kd_dist, float Ki_dist, std::string bot_name);
+        PointTracker(ros::NodeHandle* nh, float Kp_theta, float Kd_theta, float Ki_theta,float Kp_dist, float Kd_dist, float Ki_dist, float velocity_limit, std::string bot_name);
 
 };
 

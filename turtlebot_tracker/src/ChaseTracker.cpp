@@ -3,14 +3,13 @@
 namespace NRT_Task{
 
 ChaseTracker::ChaseTracker(ros::NodeHandle* nh, float Kp_theta, float Kd_theta, float Ki_theta,float Kp_dist, float Kd_dist, float Ki_dist, float velocity_limit, float acceleration_limit, std::string bot_name)
-: PointTracker(nh, Kp_theta, Kd_theta, Ki_theta, Kp_dist, Kd_dist, Ki_dist, bot_name), 
-acceleration_limit_(acceleration_limit),
-linear_velocity_cap(velocity_limit),
-angular_velocity_cap(velocity_limit/0.3)
+: PointTracker(nh, Kp_theta, Kd_theta, Ki_theta, Kp_dist, Kd_dist, Ki_dist, velocity_limit, bot_name), 
+acceleration_limit_(acceleration_limit)
 {
     rt_pose_subscriber = nh_->subscribe("/rt_real_pose", 1, &ChaseTracker::rt_pose_callback, this);
     pose_subscriber_ = nh_->subscribe(bot_name + std::string("/pose"), 1, &ChaseTracker::pose_callback, this);
     target_radius_ = 1.0;
+    angular_velocity_cap = velocity_limit/0.3;
 }
 
 void ChaseTracker::rt_pose_callback(const turtlesim::Pose& msg){
@@ -40,14 +39,14 @@ void ChaseTracker::pose_callback(const turtlesim::Pose& msg){
     //     integral_error_theta = 0;
     // }
     
-    if (error_dist < target_radius_){
+    // if (error_dist < target_radius_){
         // integral_error_dist = 0;
-        integral_error_theta = 0;
-        velocity_msg_.angular.z = 0.;
-        velocity_msg_.linear.x = 0.;
-        velocity_publisher_.publish(velocity_msg_);
-        return;
-    }
+        // integral_error_theta = 0;
+        // velocity_msg_.angular.z = 0.;
+        // velocity_msg_.linear.x = 0.;
+        // velocity_publisher_.publish(velocity_msg_);
+        // return;
+    // }
 
     float error_theta_d = (error_theta - error_theta_last)/duration;
     integral_error_dist += (error_dist + error_dist_last)/2*duration;

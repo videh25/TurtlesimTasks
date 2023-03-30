@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="bot_name" default="RT"/>
+    <arg name="bot_name" default="PT"/>
     <arg name="position_x" default="1.0"/>
     <arg name="position_y" default="1.0"/>
 
@@ -8,6 +8,7 @@
 
     <node pkg="rosservice" type="rosservice" name="turtle1_killer" args="call /kill turtle1" />
     <node pkg="rosservice" type="rosservice" name="RT_spawner" args="call /spawn '{x: $(arg position_x), y: $(arg position_y), theta: 0., name: '$(arg bot_name)'}'" />
-    <node pkg="turtlebot_tracker" type="turtle_point_tracker" name="PointTrackingNode" args=" $(arg bot_name) 1 0.2 0 0.3 0 0.1" />
+    <rosparam file="$(find turtlebot_tracker)/config/goal1_gains.yaml" command="load"/>
+    <node pkg="turtlebot_tracker" type="turtle_point_tracker" name="PointTrackingNode" args=" $(arg bot_name)" />
 
 </launch>

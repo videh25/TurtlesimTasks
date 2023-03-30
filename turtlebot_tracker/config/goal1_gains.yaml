@@ -1,0 +1,10 @@
+PT:
+  PID_Theta:
+    Kp: 10
+    Kd: 0
+    Ki: 0
+  PID_Distance:
+      Kp: 4.
+      Kd: 0
+      Ki: 0.
+  velocity_limit: 5.0
